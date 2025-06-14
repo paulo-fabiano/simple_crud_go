@@ -15,8 +15,11 @@ func main() {
 	if err != nil {
 		log.Fatal("Error in setup config databse: ", err)
 	}
+	
+	log.Printf("Aplicação rodando na porta 8080")
 
 	// Inicializando Server e Routes
 	router.InitializeRoutesAPI()
+
 
 }
