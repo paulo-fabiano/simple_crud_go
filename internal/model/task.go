@@ -1,10 +1,23 @@
 package model
 
-import "time"
+import (
+	"database/sql"
+	"time"
+)
 
 type Task struct {
 	ID uint	`json:"id"`
-	Name string `json:"nome"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt sql.NullTime `json:"updatedAt"`
+	DeletedAt sql.NullTime `json:"deteledAt"`
+	Name string `json:"name"`
+	Description string `json:"description"`
+	Status bool `json:"status"`
+}
+
+//Dto Request
+type TaskRequest struct {
+	Name string `json:"name"`
 	Description string `json:"description"`
 	Status bool `json:"status"`
 }
@@ -13,9 +26,9 @@ type Task struct {
 type TaskResponse struct {
 	ID uint	`json:"id"`
 	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
-	DeletedAt time.Time `json:"deteledAt,omitempty"`
-	Name string `json:"nome"`
+	UpdatedAt *time.Time `json:"updatedAt"`
+	DeletedAt *time.Time `json:"deteledAt"`
+	Name string `json:"name"`
 	Description string `json:"description"`
 	Status bool `json:"status"`
 }

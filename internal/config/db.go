@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	dbConnection *sql.DB
+	DBConnection *sql.DB
 )
 
 // Inicializa a conexão com o banco de dados
@@ -22,6 +22,7 @@ func SetupDB() (error) {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
+		log.Default()
 	}
 
 	var (
@@ -35,13 +36,13 @@ func SetupDB() (error) {
 	)
 	
 	connectionString := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", dbHost, dbPort, dbUser, dbPassword, dbName)
-	dbConnection, err := sql.Open("postgres", connectionString)
+	DBConnection, err = sql.Open("postgres", connectionString)
 	if err != nil {
 		log.Fatal("Error opening connection to database", err)
 		return err
 	}
 	
-	err = dbConnection.Ping()
+	err = DBConnection.Ping()
 	if err != nil {
 		log.Fatal("Error in ping command on database", err)
 		return err
@@ -53,5 +54,5 @@ func SetupDB() (error) {
 
 // Retorna a conexão para ser usada em outros locais
 func GetConnectionDB() *sql.DB {
-	return dbConnection
+	return DBConnection
 }

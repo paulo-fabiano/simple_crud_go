@@ -2,43 +2,29 @@ package handler
 
 import (
 
-	"database/sql"
 	"encoding/json"
 	"net/http"
+	"strconv"
 
-	"github.com/paulo-fabiano/simple-crud-api/internal/config"
-	"github.com/paulo-fabiano/simple-crud-api/internal/model"
+	"github.com/gorilla/mux"
+	repository "github.com/paulo-fabiano/simple-crud-api/internal/repository/task"
 
 )
 
-func ListTask(w http.ResponseWriter, r *http.Request, id *uint) {
+func ListTaskHandler(w http.ResponseWriter, r *http.Request) {
 
-	// Buscando a conexão com o DB
-	db := config.GetConnectionDB()
-
-	query := "SELECT * FROM tasks WHERE id = $;"
-	row := db.QueryRow(query, &id)
-
-	// Variável que irá receber os valores
-	var task model.TaskResponse
-	err := row.Scan(&task.ID, &task.CreatedAt, &task.DeletedAt, &task.UpdatedAt, 
-		&task.Name, &task.Description, &task.Status)
-	defer row.Scan()
-	
+	vars := mux.Vars(r)
+	id := vars["id"]
+	idTask, err := strconv.Atoi(id)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			w.WriteHeader(http.StatusNotFound)
-			w.Write([]byte("error id not exists"))
-			return 
-		} else {
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte("error in query"))
-			return 
-		}
+		w.WriteHeader(http.StatusBadGateway)
+		w.Write([]byte("erro id não é um número"))
+		return
 	}
+	taskResponse := repository.ListTask(idTask)
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(task)
+	json.NewEncoder(w).Encode(taskResponse)
 	w.WriteHeader(http.StatusOK)
 
 }
