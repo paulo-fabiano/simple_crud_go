@@ -1,26 +1,30 @@
 package handler
 
 import (
+
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 
-	"github.com/gorilla/mux"
 	"github.com/paulo-fabiano/simple-crud-api/internal/model"
 	repository "github.com/paulo-fabiano/simple-crud-api/internal/repository/task"
+
 )
 
 func UpdateTaskHandler(w http.ResponseWriter, r *http.Request) {
 
-	params := mux.Vars(r)
-	id := params["id"]
-	idTask, err := strconv.Atoi(id)
+	idString, err := getIDParams(r)
 	if err != nil {
-		log.Fatal(err)
+		sendError(w, http.StatusBadRequest, err.Error())
+		return
 	}
-
+	
+	id, err := convertIDToInt(*idString)
+	if err != nil {
+		sendError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	
 	var task model.TaskRequest
 
 	taskDecoder := json.NewDecoder(r.Body)
@@ -28,16 +32,13 @@ func UpdateTaskHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	
-	err = repository.UpdateTask(idTask, task)
+	err = repository.UpdateTask(*id, task)
 	if err != nil {
-		fmt.Println(err)
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("Error update task"))
+		sendError(w, http.StatusInternalServerError, "erro ao atualizar o objeto")
+		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Task Update"))
+	sendSucess(w, http.StatusOK, "task atualizada")
 
 }

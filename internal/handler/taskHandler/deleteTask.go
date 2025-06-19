@@ -1,24 +1,31 @@
 package handler
 
 import (
-	"log"
 	"net/http"
-	"strconv"
 
-	"github.com/gorilla/mux"
 	repository "github.com/paulo-fabiano/simple-crud-api/internal/repository/task"
 )
 
 func DeleteTaskHandler(w http.ResponseWriter, r *http.Request) {
 
-	params := mux.Vars(r)
-	id := params["id"]
-	idTask, err := strconv.Atoi(id)
+	idString, err := getIDParams(r)
 	if err != nil {
-		log.Fatal(err)
+		sendError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	
+	id, err := convertIDToInt(*idString)
+	if err != nil {
+		sendError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	
+	err = repository.DeleteTask(id)
+	if err != nil {
+		sendError(w, http.StatusInternalServerError, err.Error())
+		return
 	}
 
-	repository.DeleteTask(&idTask)
+	sendSucess(w, http.StatusOK, "objeto deletado com sucesso")
 
-	// implementar resto da função
 }

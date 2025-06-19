@@ -16,13 +16,17 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 	err := taskDecoder.Decode(&taskRequest)
 	if err != nil {
 		log.Fatal("Error in decode", err)
+		sendError(w, http.StatusInternalServerError, "error in decode object")
+		return
 	}
 	
-	// Save
 	err = repository.CreateTask(&taskRequest)
 	if err != nil {
 		log.Fatal(err.Error())
+		sendError(w, http.StatusInternalServerError, "error creating object")
+		return
 	}
+
 	// w.Header().Set("Content-Type", "application/josn")
 	w.WriteHeader(http.StatusCreated)
 	w.Write([]byte("Create task!"))	

@@ -1,27 +1,31 @@
 package handler
 
 import (
-
 	"encoding/json"
 	"net/http"
-	"strconv"
 
-	"github.com/gorilla/mux"
 	repository "github.com/paulo-fabiano/simple-crud-api/internal/repository/task"
-
 )
 
 func ListTaskHandler(w http.ResponseWriter, r *http.Request) {
 
-	vars := mux.Vars(r)
-	id := vars["id"]
-	idTask, err := strconv.Atoi(id)
+	idString, err := getIDParams(r)
 	if err != nil {
-		w.WriteHeader(http.StatusBadGateway)
-		w.Write([]byte("erro id não é um número"))
+		sendError(w, http.StatusBadRequest, err.Error())
 		return
 	}
-	taskResponse := repository.ListTask(idTask)
+	
+	id, err := convertIDToInt(*idString)
+	if err != nil {
+		sendError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	
+	taskResponse, err := repository.ListTask(*id)
+	if err != nil {
+		sendError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(taskResponse)
