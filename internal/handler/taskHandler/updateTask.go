@@ -3,7 +3,6 @@ package handler
 import (
 
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/paulo-fabiano/simple-crud-api/internal/model"
@@ -30,15 +29,15 @@ func UpdateTaskHandler(w http.ResponseWriter, r *http.Request) {
 	taskDecoder := json.NewDecoder(r.Body)
 	err = taskDecoder.Decode(&task)
 	if err != nil {
-		log.Fatal(err)
+		logger.Errorf("erro ao fazer decode: %v", err)
 	}
 	
-	err = repository.UpdateTask(*id, task)
+	taskResponse, err := repository.UpdateTask(id, task)
 	if err != nil {
 		sendError(w, http.StatusInternalServerError, "erro ao atualizar o objeto")
 		return
 	}
 
-	sendSucess(w, http.StatusOK, "task atualizada")
+	sendListTask(w, http.StatusOK, taskResponse)
 
 }

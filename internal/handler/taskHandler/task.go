@@ -1,7 +1,6 @@
 package handler
 
 import (
-
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -9,7 +8,11 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/paulo-fabiano/simple-crud-api/internal/config"
+)
 
+var (
+	logger *config.Logger
 )
 
 type MessageError struct {

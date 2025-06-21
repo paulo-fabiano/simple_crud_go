@@ -23,6 +23,10 @@ type SendListTasks struct {
 	Data	interface{}	`json:"data"`
 }
 
+type SendTask struct {
+	Data	interface{}	`json:"data"`
+}
+
 func sendListTasks(writer http.ResponseWriter, code int, data interface{}) {
 
 	writer.Header().Set("Content-Type", "aplication/json")
@@ -32,3 +36,16 @@ func sendListTasks(writer http.ResponseWriter, code int, data interface{}) {
 	})
 
 }
+
+func sendListTask(writer http.ResponseWriter, code int, data interface{}) {
+
+	writer.Header().Set("Content-Type", "aplication/json")
+	writer.WriteHeader(code)
+	json.NewEncoder(writer).Encode(SendTask{
+		Data: data,
+	})
+
+}
+
+
+
