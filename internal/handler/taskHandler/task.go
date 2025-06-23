@@ -1,6 +1,7 @@
 package handler
 
 import (
+
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -9,6 +10,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/paulo-fabiano/simple-crud-api/internal/config"
+	
 )
 
 var (
@@ -66,5 +68,33 @@ func convertIDToInt(idString string) (*int, error) {
 	}
 
 	return &id, nil
+
+}
+
+type SendTask struct {
+	Data	interface{}	`json:"data"`
+}
+
+func sendListTask(writer http.ResponseWriter, code int, data interface{}) {
+
+	writer.Header().Set("Content-Type", "aplication/json")
+	writer.WriteHeader(code)
+	json.NewEncoder(writer).Encode(SendTask{
+		Data: data,
+	})
+
+}
+
+type SendListTasks struct {
+	Data	interface{}	`json:"data"`
+}
+
+func sendListTasks(writer http.ResponseWriter, code int, data interface{}) {
+
+	writer.Header().Set("Content-Type", "aplication/json")
+	writer.WriteHeader(code)
+	json.NewEncoder(writer).Encode(SendListTasks{
+		Data: data,
+	})
 
 }

@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"encoding/json"
 	"net/http"
 
 	repository "github.com/paulo-fabiano/simple-crud-api/internal/repository/task"
@@ -27,8 +26,6 @@ func ListTaskHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(taskResponse)
-	w.WriteHeader(http.StatusOK)
+	sendListTask(w, http.StatusOK, taskResponse)
 
 }

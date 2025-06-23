@@ -28,5 +28,4 @@ func main() {
 	// Inicializando Server e Routes
 	router.InitializeRoutesAPI()
 
-
 }

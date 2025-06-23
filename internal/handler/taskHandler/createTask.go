@@ -28,7 +28,6 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte("Create task!"))	
+	sendSucess(w, http.StatusOK, "task created")
 	
 }
